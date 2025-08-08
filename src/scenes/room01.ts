@@ -1,8 +1,8 @@
-import { Bodies, Composite, Engine } from "matter-js";
+import { Bodies, Body, Composite, Engine, Events } from "matter-js";
 import { Game } from "../engine/game";
 import { GameScene } from "../engine/gameScene";
 import { Colision } from "../objects/colision";
-import { Player } from "../objects/player";
+import { Player, playerState } from "../objects/player";
 import { DebugBody } from "../util/debugBody";
 import { Thorn } from "../objects/thorn";
 
@@ -36,7 +36,17 @@ export class Room1 extends GameScene{
 
         this.addObject(new DebugBody(box))
         this.addObject(new DebugBody(box1))
-        
+        Events.on(this.physics, 'collisionActive', (event)=>{
+            event.pairs.forEach(pair=>{
+                if ((pair.bodyB===this.player.body && pair.bodyA===this.thorn.body) || (pair.bodyA===this.thorn.body && pair.bodyB === this.player.body)) {
+                    if (this.player.canSuffer){
+                        this.player.state=playerState.HIT
+                        this.player.suffering=true
+                        this.player.startHitTime=Date.now()
+                    }
+                }  
+            })
+        })
     }
     update(): void {
         super.update()

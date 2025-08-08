@@ -6,6 +6,11 @@ import { createJoystick } from "../util/createJoystick";
 import { Key } from "../engine/gameJoystick";
 import { DebugBody } from "../util/debugBody";
 
+export enum playerState {
+    MOVE,
+    HIT
+}
+
 export class Player extends GameObject{
     container = new Container() 
     sprPlayerIdle!: AnimatedSprite
@@ -15,6 +20,10 @@ export class Player extends GameObject{
     joystick = createJoystick()
     currentSprite: AnimatedSprite | null = null
     canJump = true
+    canSuffer = true
+    startHitTime!: number 
+    suffering = false
+    state = playerState.MOVE
     static readonly SPEED = 0.15     
     static readonly MAX_SPEED = 0.1
     static readonly MAX_RUN_ANIMATION_SPRITE = 0.001
@@ -122,6 +131,9 @@ export class Player extends GameObject{
             for (const pair of event.pairs){
                 let angle = Math.atan2(pair.collision.normal.y, pair.collision.normal.x)*(180/Math.PI)
                 if (pair.bodyB===this.body && pair.bodyA.label === 'ground' && angle==90){
+                    if (this.state===playerState.HIT && !this.canSuffer){
+                        this.state=playerState.MOVE
+                    }
                     this.canJump=true
                     this.body.friction=1
                     break;
@@ -140,29 +152,47 @@ export class Player extends GameObject{
     update(): void {
         super.update()
         this.sprPlayerRun.animationSpeed = Math.max(Math.abs(this.body.velocity.x/Player.SPEED*Player.MAX_RUN_ANIMATION_SPRITE),0.05)
-        
-        const hSpeed = (Number(this.joystick.isKeyDown(Key.RIGHT))-Number(this.joystick.isKeyDown(Key.LEFT)))*Player.SPEED
-        
-        Body.applyForce(this.body, this.body.position,{
-            x: hSpeed,
-            y: 0
-        })
-        if (Math.abs(this.body.velocity.x) > Player.MAX_SPEED) {
-            Body.setVelocity(this.body, {
-                x: Math.sign(this.body.velocity.x) * Player.MAX_SPEED,
-                y: this.body.velocity.y
-            })
+        switch (this.state){
+            case playerState.MOVE:
+                const hSpeed = (Number(this.joystick.isKeyDown(Key.RIGHT))-Number(this.joystick.isKeyDown(Key.LEFT)))*Player.SPEED
+                
+                Body.applyForce(this.body, this.body.position,{
+                    x: hSpeed,
+                    y: 0
+                })
+                if (Math.abs(this.body.velocity.x) > Player.MAX_SPEED) {
+                    Body.setVelocity(this.body, {
+                        x: Math.sign(this.body.velocity.x) * Player.MAX_SPEED,
+                        y: this.body.velocity.y
+                    })
+                }
+                if (Math.abs(Body.getVelocity(this.body).x) < 0.00001){
+                    if (this.currentSprite !== this.sprPlayerIdle) {
+                        this.setSprite(this.sprPlayerIdle)
+                    }
+                } else {
+                    if (this.currentSprite !== this.sprPlayerRun) {
+                        this.setSprite(this.sprPlayerRun)
+                    }
+                }
+                break;
+            case playerState.HIT:
+                if (this.suffering){
+                    Body.applyForce(this.body,this.body.position,{
+                        x:0,
+                        y:-1
+                    })
+                    this.canJump=false
+                    this.suffering=false
+                    this.canSuffer=false
+                }
+                break;
         }
-        if (Math.abs(Body.getVelocity(this.body).x) < 0.00001){
-            if (this.currentSprite !== this.sprPlayerIdle) {
-        this.setSprite(this.sprPlayerIdle)
-            }
-        } else {
-            if (this.currentSprite !== this.sprPlayerRun) {
-                this.setSprite(this.sprPlayerRun)
+        if (!this.canSuffer){
+            if (Date.now()-this.startHitTime>1000){
+                this.canSuffer=true
             }
         }
-        
         // Body.setAngularSpeed(this.body,0)
         this.container.position.set(this.body.position.x,this.body.position.y)
         this.container.rotation = this.body.angle

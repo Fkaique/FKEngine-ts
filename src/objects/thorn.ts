@@ -29,7 +29,7 @@ export class Thorn extends GameObject{
             isStatic: true,
             friction: 0,
             label: 'ground',
-            
+            isSensor: true
         })
         Composite.add(this.physics.world, this.body)
 

@@ -1,12 +1,15 @@
 import { Graphics } from "pixi.js";
 import { Game } from "../engine/game";
 import { GameObject } from "../engine/gameObject";
-import { Bodies, Body, Composite } from "matter-js";
+import { Bodies, Body, Composite, Engine } from "matter-js";
 
 export class Colision extends GameObject{
     sprite!: Graphics 
     body!: Body
 
+    constructor(readonly physics: Engine){
+        super()
+    }
     create(game: Game): void {
         super.create(game)
         const {width, height} = game.app.canvas
@@ -17,9 +20,10 @@ export class Colision extends GameObject{
 
         this.body = Bodies.rectangle(width/2, height-50, width, 100,{
             isStatic: true,
-            friction: 0
+            friction: 0,
+            label: 'ground'
         })
-        Composite.add(game.physics.world, this.body)
+        Composite.add(this.physics.world, this.body)
     }
 
     update(): void {
@@ -30,7 +34,7 @@ export class Colision extends GameObject{
     destroy(): void {
         this.sprite.removeFromParent()
         this.sprite.destroy()
-        Composite.remove(this.game.physics.world, this.body)
+        Composite.remove(this.physics.world, this.body)
         super.destroy()
     }
 }

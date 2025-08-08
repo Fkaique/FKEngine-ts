@@ -39,11 +39,8 @@ export class Room1 extends GameScene{
         Events.on(this.physics, 'collisionActive', (event)=>{
             event.pairs.forEach(pair=>{
                 if ((pair.bodyB===this.player.body && pair.bodyA===this.thorn.body) || (pair.bodyA===this.thorn.body && pair.bodyB === this.player.body)) {
-                    if (this.player.canSuffer){
-                        this.player.state=playerState.HIT
-                        this.player.suffering=true
-                        this.player.startHitTime=Date.now()
-                    }
+                    this.player.state=playerState.HIT
+                    this.player.suffering=true
                 }  
             })
         })

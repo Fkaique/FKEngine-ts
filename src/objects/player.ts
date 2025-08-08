@@ -21,7 +21,6 @@ export class Player extends GameObject{
     currentSprite: AnimatedSprite | null = null
     canJump = true
     canSuffer = true
-    startHitTime!: number 
     suffering = false
     state = playerState.MOVE
     static readonly SPEED = 0.15     
@@ -115,23 +114,22 @@ export class Player extends GameObject{
                 this.container.scale.x = Math.sign(hSpeed)
             }
         })
-
-        this.joystick.onKeyDown(Key.JUMP, () =>{
-            if (!this.canJump) return
-            this.canJump=false
-            this.body.friction=0
-            Body.applyForce(this.body, this.body.position,{
-                y: -Player.JUMP_FORCE,
-                x: 0
+            this.joystick.onKeyDown(Key.JUMP, () =>{
+                if (!this.canJump) return
+                this.canJump=false
+                this.body.friction=0
+                Body.applyForce(this.body, this.body.position,{
+                    y: -Player.JUMP_FORCE,
+                    x: 0
+                })
+                
             })
-            
-        })
 
         Events.on(this.physics, 'collisionStart', (event)=>{
             for (const pair of event.pairs){
                 let angle = Math.atan2(pair.collision.normal.y, pair.collision.normal.x)*(180/Math.PI)
                 if (pair.bodyB===this.body && pair.bodyA.label === 'ground' && angle==90){
-                    if (this.state===playerState.HIT && !this.canSuffer){
+                    if (this.state===playerState.HIT){
                         this.state=playerState.MOVE
                     }
                     this.canJump=true
@@ -179,25 +177,16 @@ export class Player extends GameObject{
             case playerState.HIT:
                 if (this.suffering){
                     Body.applyForce(this.body,this.body.position,{
-                        x:0,
-                        y:-1
+                        x:0.2*-Math.sign(this.container.scale.x),
+                        y:-0.7
                     })
                     this.canJump=false
                     this.suffering=false
-                    this.canSuffer=false
                 }
                 break;
         }
-        if (!this.canSuffer){
-            if (Date.now()-this.startHitTime>1000){
-                this.canSuffer=true
-            }
-        }
-        // Body.setAngularSpeed(this.body,0)
         this.container.position.set(this.body.position.x,this.body.position.y)
         this.container.rotation = this.body.angle
-
-
     }
     destroy(): void {
         this.sprPlayerIdle.removeFromParent()

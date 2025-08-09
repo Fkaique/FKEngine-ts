@@ -110,8 +110,7 @@ export class Player extends GameObject {
       const hSpeed =
         Number(this.joystick.isKeyDown(Key.RIGHT)) -
         Number(this.joystick.isKeyDown(Key.LEFT));
-      console.log(hSpeed);
-
+        
       if (hSpeed === 0) {
         this.setSprite(this.sprPlayerIdle);
       } else {

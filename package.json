@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "npm run dev",
-    "build": "npm run format && npm run lint && tsc && vite build",
+    "start": "pnpm run dev",
+    "build": "export NODE_ENV=production pnpm run format && pnpm run lint && tsc && vite build",
     "format": "prettier --write .",
     "lint": "eslint . --fix",
     "dev": "vite"

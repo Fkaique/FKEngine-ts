@@ -16,6 +16,7 @@ export default tseslint.config(
       sourceType: "module",
     },
     rules: {
+      "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
       "@typescript-eslint/no-unused-vars": [
         "error",
         {

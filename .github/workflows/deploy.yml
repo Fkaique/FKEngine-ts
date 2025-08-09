@@ -20,10 +20,10 @@ jobs:
         with:
           node-version: "22"
           cache: pnpm
-      - name: install dependences
+      - name: install dependencies
         run: pnpm i
       - name: build
-        run: "pnpm docs:build --base /FKEngine-ts/"
+        run: "pnpm build --base /FKEngine-ts/"
 
       - name: Upload artifacts to GitHub Pages
         uses: actions/upload-pages-artifact@v3

@@ -1,17 +1,17 @@
 import { Game } from "./game";
 
 export class GameObject {
-    game!: Game
-    mounted = false
+  game!: Game;
+  mounted = false;
 
-    create(game: Game) {
-        this.game = game
-        this.mounted = true
-    }
+  create(game: Game) {
+    this.game = game;
+    this.mounted = true;
+  }
 
-    update() {}
+  update() {}
 
-    destroy() {}
+  destroy() {}
 
-    async preLoad(): Promise<void> {}
+  async preLoad(): Promise<void> {}
 }

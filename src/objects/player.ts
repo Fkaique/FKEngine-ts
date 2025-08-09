@@ -46,13 +46,13 @@ export class Player extends GameObject {
 
   async preLoad(): Promise<void> {
     await Assets.load([
-      "./assets/player/Lilian1.png",
-      "./assets/player/Lilian2.png",
-      "./assets/player/Lilian3.png",
-      "./assets/player/LilianRun1.png",
-      "./assets/player/LilianRun2.png",
-      "./assets/player/LilianRun3.png",
-      "./assets/player/LilianRun4.png",
+      `${import.meta.env.BASE_URL}/assets/player/Lilian1.png`,
+      `${import.meta.env.BASE_URL}/assets/player/Lilian2.png`,
+      `${import.meta.env.BASE_URL}/assets/player/Lilian3.png`,
+      `${import.meta.env.BASE_URL}/assets/player/LilianRun1.png`,
+      `${import.meta.env.BASE_URL}/assets/player/LilianRun2.png`,
+      `${import.meta.env.BASE_URL}/assets/player/LilianRun3.png`,
+      `${import.meta.env.BASE_URL}/assets/player/LilianRun4.png`,
     ]);
   }
   create(game: Game): void {
@@ -62,9 +62,9 @@ export class Player extends GameObject {
     const spriteYScale = 2; //
 
     this.sprPlayerIdle = new AnimatedSprite([
-      Texture.from("./assets/player/Lilian1.png"),
-      Texture.from("./assets/player/Lilian2.png"),
-      Texture.from("./assets/player/Lilian3.png"),
+      Texture.from(`${import.meta.env.BASE_URL}/assets/player/Lilian1.png`),
+      Texture.from(`${import.meta.env.BASE_URL}/assets/player/Lilian2.png`),
+      Texture.from(`${import.meta.env.BASE_URL}/assets/player/Lilian3.png`),
     ]);
     this.sprPlayerIdle.play();
     this.sprPlayerIdle.animationSpeed = 0.05; //
@@ -72,10 +72,10 @@ export class Player extends GameObject {
     this.sprPlayerIdle.anchor.set(0.5);
 
     this.sprPlayerRun = new AnimatedSprite([
-      Texture.from("./assets/player/LilianRun1.png"),
-      Texture.from("./assets/player/LilianRun2.png"),
-      Texture.from("./assets/player/LilianRun3.png"),
-      Texture.from("./assets/player/LilianRun4.png"),
+      Texture.from(`${import.meta.env.BASE_URL}/assets/player/LilianRun1.png`),
+      Texture.from(`${import.meta.env.BASE_URL}/assets/player/LilianRun2.png`),
+      Texture.from(`${import.meta.env.BASE_URL}/assets/player/LilianRun3.png`),
+      Texture.from(`${import.meta.env.BASE_URL}/assets/player/LilianRun4.png`),
     ]);
     this.sprPlayerRun.play();
     this.sprPlayerRun.scale.set(spriteXScale, spriteYScale);

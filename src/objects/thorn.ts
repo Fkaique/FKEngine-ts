@@ -13,13 +13,15 @@ export class Thorn extends GameObject {
   }
 
   async preLoad(): Promise<void> {
-    await Assets.load(["/assets/thorn.png"]);
+    await Assets.load([`${import.meta.env.BASE_URL}/assets/thorn.png`]);
   }
 
   create(game: Game): void {
     super.create(game);
 
-    this.sprite = new Sprite(Assets.get("/assets/thorn.png"));
+    this.sprite = new Sprite(
+      Assets.get(`${import.meta.env.BASE_URL}/assets/thorn.png`),
+    );
     this.sprite.anchor.set(0.5);
     game.app.stage.addChild(this.sprite);
 
